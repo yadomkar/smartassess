@@ -6,3 +6,6 @@ redis
 requests
 django-celery-beat
 bpython
+pdfplumber
+python-dotenv
+openai
