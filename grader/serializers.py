@@ -13,3 +13,9 @@ class StudentSerializer(serializers.ModelSerializer):
     class Meta:
         model = Student
         fields = ['id', 'first_name', 'last_name', 'email', 'enrollment_number']
+
+
+class HomeworkStatusSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Homework
+        fields = ['student', 'grade', 'status']  # This will include all fields from the Homework model
