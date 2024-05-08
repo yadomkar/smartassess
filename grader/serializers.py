@@ -18,4 +18,4 @@ class StudentSerializer(serializers.ModelSerializer):
 class HomeworkStatusSerializer(serializers.ModelSerializer):
     class Meta:
         model = Homework
-        fields = ['student', 'status']  # This will include all fields from the Homework model
+        fields = ['student', 'status']
