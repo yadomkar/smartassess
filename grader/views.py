@@ -3,7 +3,7 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 from .models import Homework, Student
-from .serializers import HomeworkSerializer
+from .serializers import HomeworkSerializer, StudentSerializer
 
 class HomeworkUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -19,3 +19,9 @@ class HomeworkUploadView(APIView):
             homework = serializer.save()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+
+class HomeworkListView(APIView):
+    def get(self, request):
+        homeworks = Homework.objects.all()
+        serializer = HomeworkSerializer(homeworks, many=True)
+        return Response(serializer.data)

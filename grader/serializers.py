@@ -1,5 +1,5 @@
 from rest_framework import serializers
-from .models import Homework
+from .models import Homework, Student
 
 class HomeworkSerializer(serializers.ModelSerializer):
     class Meta:
@@ -8,3 +8,8 @@ class HomeworkSerializer(serializers.ModelSerializer):
 
     def create(self, validated_data):
         return Homework.objects.create(**validated_data)
+
+class StudentSerializer(serializers.ModelSerializer):
+    class Meta:
+        model = Student
+        fields = ['id', 'first_name', 'last_name', 'email', 'enrollment_number']
