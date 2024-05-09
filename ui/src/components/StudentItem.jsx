@@ -44,7 +44,7 @@ function StudentItem({ studentId, status, studentName }) {
 
   const viewGrades = async () => {
     try {
-      const response = await fetch(`http://localhost:8000/homeworks/detail/?id=${studentId}`);
+      const response = await fetch(`http://localhost:8000/homeworks/detail/?student_id=${studentId}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -94,7 +94,7 @@ function StudentItem({ studentId, status, studentName }) {
       {isGradesPopupOpen && (
         <div className="fixed inset-0 bg-gray-700 bg-opacity-50 flex justify-center items-center z-50">
           <div className="bg-white p-8 rounded-lg shadow-lg space-y-6">
-            <h3 className="text-2xl font-bold">Grades for {studentId}</h3>
+            <h3 className="text-2xl font-bold">Grades for {studentName}</h3>
             <p><strong>Grade:</strong> {grades?.grade ?? 'N/A'}</p>
             {/* <p><strong>Comments:</strong> {grades?.comments ?? 'N/A'}</p> */}
             <p><strong>Feedback:</strong> {grades?.feedback ?? 'N/A'}</p>
