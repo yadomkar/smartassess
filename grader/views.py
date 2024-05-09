@@ -28,6 +28,7 @@ class HomeworkUploadView(APIView):
         if serializer.is_valid():
             # Save the validated homework data
             homework = serializer.save()
+            homework.grade_assignment()
             return Response(serializer.data, status=status.HTTP_201_CREATED)
         else:
             # Return errors if the data is not valid
@@ -66,3 +67,4 @@ class FileUploadView(APIView):
             return Response({'file_url': file_url}, status=status.HTTP_201_CREATED)
         else:
             return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+

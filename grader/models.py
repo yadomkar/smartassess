@@ -48,9 +48,9 @@ class Homework(models.Model):
                 text += page.extract_text() or ''
         return text
 
-    def grade_assignment(self, rubric_pdf_path):
+    def grade_assignment(self):
         student_text = self.read_pdf(self.file.path)
-        rubric_text = self.read_pdf(rubric_pdf_path)
+        rubric_text = self.read_pdf('professoFiles/Rubric.pdf')
 
         prompt = f"""
         Assess the following student assignment based on the detailed rubric provided. The goal is to determine how well the student has met the criteria outlined in the rubric.
@@ -86,8 +86,6 @@ class Homework(models.Model):
 
         print(result_text)
 
-        # Here you might need to parse the result_text to find the actual grade and feedback
-        # For now, let's assume the parsing function `parse_response(result_text)` exists
         grade, feedback = parse_response(result_text)
 
         self.ocr_text = student_text
