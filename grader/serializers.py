@@ -16,6 +16,12 @@ class StudentSerializer(serializers.ModelSerializer):
 
 
 class HomeworkStatusSerializer(serializers.ModelSerializer):
+    student_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Homework
-        fields = ['student', 'status']
+        fields = ['student_name', 'status', 'id']
+
+    def get_student_name(self, obj):
+        # Access the student object through the foreign key relationship
+        return str(obj.student)
