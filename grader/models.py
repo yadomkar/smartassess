@@ -66,8 +66,8 @@ class Homework(models.Model):
             {{
                 "grade": "A numerical grade out of 10, considering the completeness and correctness of the student's answers compared to the rubric.",
                 "feedback": {{
-                    "strengths": "Detailed strengths highlighting what concepts were well understood and correctly applied.",
-                    "improvements": "Detailed areas for improvement where the student failed to meet the rubric's criteria or showed misunderstanding."
+                    "strengths": "Detailed question wise strengths highlighting what concepts were well understood and correctly applied. In markdown.",
+                    "improvements": "Detailed question wise areas for improvement where the student failed to meet the rubric's criteria or showed misunderstanding. In markdown."
                 }}
             }}
             """
