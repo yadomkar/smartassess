@@ -2,12 +2,18 @@ from rest_framework import serializers
 from .models import Homework, Student
 
 class HomeworkSerializer(serializers.ModelSerializer):
+    student_name = serializers.SerializerMethodField()
+
     class Meta:
         model = Homework
-        fields = '__all__'  # This will include all fields from the Homework model
+        fields = [field.name for field in Homework._meta.fields] + ['student_name']
+
+    def get_student_name(self, obj):
+        return str(obj.student)
 
     def create(self, validated_data):
         return Homework.objects.create(**validated_data)
+
 
 class StudentSerializer(serializers.ModelSerializer):
     class Meta:
@@ -25,3 +31,6 @@ class HomeworkStatusSerializer(serializers.ModelSerializer):
     def get_student_name(self, obj):
         # Access the student object through the foreign key relationship
         return str(obj.student)
+
+class FileUploadSerializer(serializers.Serializer):
+    file = serializers.FileField()

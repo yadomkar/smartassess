@@ -72,14 +72,7 @@ class Homework(models.Model):
         Strengths: [Detailed strengths]
         Improvements: [Detailed areas for improvement]
         """
-        # response = openai.ChatCompletion.create(
-        #     model="gpt-3.5-turbo",
-        #     messages=[
-        #         {"role": "system", "content": "You are a helpful assistant."},
-        #         {"role": "user", "content": prompt}
-        #     ],
-        #     api_key=settings.OPENAI_API_KEY
-        # )
+
         client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",

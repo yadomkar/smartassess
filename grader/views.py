@@ -4,7 +4,9 @@ from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
 from rest_framework import status
 from .models import Homework, Student
-from .serializers import HomeworkSerializer, StudentSerializer, HomeworkStatusSerializer
+from .serializers import HomeworkSerializer, StudentSerializer, HomeworkStatusSerializer, FileUploadSerializer
+from django.core.files.storage import FileSystemStorage
+
 
 class HomeworkUploadView(APIView):
     parser_classes = (MultiPartParser, FormParser)
@@ -50,3 +52,17 @@ class HomeworkDetailView(APIView):
         homework = Homework.objects.filter(student_id=student_id).order_by('-submission_date').first()
         serializer = HomeworkSerializer(homework)
         return Response(serializer.data)
+
+class FileUploadView(APIView):
+    parser_classes = [MultiPartParser, FormParser]
+
+    def post(self, request, *args, **kwargs):
+        serializer = FileUploadSerializer(data=request.data)
+        if serializer.is_valid():
+            file = serializer.validated_data['file']
+            fs = FileSystemStorage(location='professor/')  # Define the directory to save files
+            filename = fs.save(file.name, file)
+            file_url = fs.url(filename)
+            return Response({'file_url': file_url}, status=status.HTTP_201_CREATED)
+        else:
+            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
