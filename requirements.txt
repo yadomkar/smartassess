@@ -9,3 +9,4 @@ bpython
 pdfplumber
 python-dotenv
 openai
+django-cors-headers
