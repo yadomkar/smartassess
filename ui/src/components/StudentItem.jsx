@@ -1,4 +1,5 @@
 import React, { useState } from 'react';
+import ReactMarkdown from 'react-markdown';
 
 function StudentItem({ studentId, status, studentName }) {
   const [file, setFile] = useState(null);
@@ -97,7 +98,10 @@ function StudentItem({ studentId, status, studentName }) {
             <h3 className="text-2xl font-bold">Grades for {studentName}</h3>
             <p><strong>Grade:</strong> {grades?.grade ?? 'N/A'}</p>
             {/* <p><strong>Comments:</strong> {grades?.comments ?? 'N/A'}</p> */}
-            <p><strong>Feedback:</strong> {grades?.feedback ?? 'N/A'}</p>
+            <p><strong>Feedback:</strong></p>
+            <div className="prose max-w-none">
+              <ReactMarkdown>{grades?.feedback ?? 'N/A'}</ReactMarkdown>
+            </div>
             <button
               onClick={closePopup}
               className="bg-red-600 hover:bg-red-700 text-white px-6 py-2 rounded-lg font-semibold"
