@@ -32,7 +32,7 @@ class Homework(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='homeworks')
     title = models.CharField(max_length=200)
     description = models.TextField()
-    submission_date = models.DateField()
+    submission_date = models.DateTimeField()
     file = models.FileField(upload_to='homeworks/')
     ocr_text = models.TextField(blank=True, null=True)
     grade = models.IntegerField(null=True, blank=True)

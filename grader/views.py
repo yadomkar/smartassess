@@ -1,4 +1,4 @@
-from datetime import date
+from datetime import date, datetime
 from rest_framework.views import APIView
 from rest_framework.response import Response
 from rest_framework.parsers import MultiPartParser, FormParser
@@ -38,7 +38,7 @@ class HomeworkUploadView(APIView):
                 setattr(homework, key, value)
 
             # Always update submission date to today's date
-        homework.submission_date = date.today()
+        homework.submission_date = datetime.now()
 
         # Save the updated homework
         homework.save()
