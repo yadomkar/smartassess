@@ -66,15 +66,15 @@ class Homework(models.Model):
             {{
                 "grade": "A numerical grade out of 10, considering the completeness and correctness of the student's answers compared to the rubric.",
                 "feedback": {{
-                    "strengths": "Detailed question wise strengths highlighting what concepts were well understood and correctly applied. In markdown.",
-                    "improvements": "Detailed question wise areas for improvement where the student failed to meet the rubric's criteria or showed misunderstanding. In markdown."
+                    "strengths": "Detailed question wise strengths highlighting what concepts were well understood and correctly applied. Give the strengths in MARKDOWN format.",
+                    "improvements": "Detailed question wise areas for improvement where the student failed to meet the rubric's criteria or showed misunderstanding. Give the Impressions in MARKDOWN format."
                 }}
             }}
             """
 
         client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
         response = client.chat.completions.create(
-            model="gpt-3.5-turbo",
+            model="gpt-4",
             messages=[
                 {"role": "system", "content": "You are a helpful grader."},
                 {"role": "user", "content": prompt}
@@ -82,6 +82,7 @@ class Homework(models.Model):
         )
 
         result_text = response.choices[0].message.content.strip()
+        result_text = clean_markdown_delimiters(result_text)
 
         print(result_text)
         print(self.student.first_name, self.student.last_name)
@@ -96,11 +97,13 @@ class Homework(models.Model):
 
 def parse_response(response_text):
     try:
+        cleaned_text = response_text.replace('\\n', '\n')
+        cleaned_text = cleaned_text.replace('\\"', '"')
         data = json.loads(response_text)
         grade = int(data["grade"])
         # Formulating feedback as a readable string
-        feedback_str = (f"Strengths of the work: {data['feedback']['strengths']}. "
-                        f"Areas for improvement: {data['feedback']['improvements']}.")
+        feedback_str = (f"**Strengths of the work:** {data['feedback']['strengths']}. \n\n"
+                        f"**Areas for improvement:** {data['feedback']['improvements']}.")
         return grade, feedback_str
     except json.JSONDecodeError as e:
         print(f"Failed to decode JSON: {str(e)}")
@@ -111,3 +114,31 @@ def parse_response(response_text):
     except ValueError as e:
         print(f"Error processing numerical values: {str(e)}")
         return None, "Feedback could not be parsed due to value error."
+
+
+def clean_markdown_delimiters(text):
+    """
+    Removes Markdown code block delimiters from the start and end of a string.
+
+    Args:
+        text (str): The text to clean.
+
+    Returns:
+        str: The cleaned text.
+    """
+    # Define the Markdown delimiters
+    markdown_start = "```json"
+    markdown_end = "```"
+
+    # Strip any leading/trailing whitespace characters
+    text = text.strip()
+
+    # Check and remove the starting delimiter
+    if text.startswith(markdown_start):
+        text = text[len(markdown_start):].strip()
+
+    # Check and remove the ending delimiter
+    if text.endswith(markdown_end):
+        text = text[:-len(markdown_end)].strip()
+
+    return text
