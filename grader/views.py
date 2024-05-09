@@ -103,7 +103,7 @@ def get_answers_from_chatgpt(questions):
     """Sends questions to ChatGPT and returns the generated answers."""
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[{"role": "system", "content": "You are a tutor."}, {"role": "user", "content": questions}]
     )
     return response.choices[0].message.content
@@ -124,7 +124,7 @@ def grade_with_openai_model(chatgpt_answers, professor_solution, rubric):
     """
     client = OpenAI(api_key=settings.OPENAI_API_KEY)
     response = client.chat.completions.create(
-        model="gpt-3.5-turbo",
+        model="gpt-4",
         messages=[
             {"role": "system", "content": "You are a helpful assistant."},
             {"role": "user", "content": prompt}
