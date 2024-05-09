@@ -132,7 +132,10 @@ def grade_with_openai_model(chatgpt_answers, professor_solution, rubric):
     )
     return response.choices[0].message.content
 
+from django.utils.decorators import method_decorator
+from django.views.decorators.csrf import csrf_exempt
 
+@method_decorator(csrf_exempt, name='dispatch')
 class AutomatedGradingView(APIView):
     def get(self, request):
         # Extract file paths from query parameters
