@@ -7,6 +7,7 @@ from django.conf import settings
 from pathlib import Path
 import os
 import dotenv
+import json
 
 dotenv.load_dotenv()
 
@@ -53,25 +54,23 @@ class Homework(models.Model):
         rubric_text = self.read_pdf('professor/Rubric.pdf')
 
         prompt = f"""
-        Assess the following student assignment based on the detailed rubric provided. The goal is to determine how well the student has met the criteria outlined in the rubric.
+            Assess the following student assignment based on the detailed rubric provided. The goal is to determine how well the student has met the criteria outlined in the rubric.
 
-        --- Rubric Description ---
-        {rubric_text}
+            --- Rubric Description ---
+            {rubric_text}
 
-        --- Student Assignment Text ---
-        {student_text}
+            --- Student Assignment Text ---
+            {student_text}
 
-        Please provide the following:
-        1. A numerical grade out of 10, considering the completeness and correctness of the student's answers compared to the rubric.
-        2. Detailed feedback highlighting:
-        - The strengths of the student's work: What concepts were well understood and correctly applied?
-        - Areas for improvement: Where did the student fail to meet the rubric's criteria or show misunderstanding?
-
-        Format your response as follows:
-        Grade: [Numerical grade]
-        Strengths: [Detailed strengths]
-        Improvements: [Detailed areas for improvement]
-        """
+            Please provide the following in JSON format:
+            {{
+                "grade": "A numerical grade out of 10, considering the completeness and correctness of the student's answers compared to the rubric.",
+                "feedback": {{
+                    "strengths": "Detailed strengths highlighting what concepts were well understood and correctly applied.",
+                    "improvements": "Detailed areas for improvement where the student failed to meet the rubric's criteria or showed misunderstanding."
+                }}
+            }}
+            """
 
         client = openai.OpenAI(api_key=settings.OPENAI_API_KEY)
         response = client.chat.completions.create(
@@ -94,7 +93,22 @@ class Homework(models.Model):
         self.status = 'graded'
         self.save()
 
+
 def parse_response(response_text):
-    grade = response_text.split('Grade: ')[1].split('\n')[0].strip()
-    feedback = response_text.split('Strengths: ')[1].split('Improvements:')[0].strip()
-    return int(grade), feedback
+    try:
+        data = json.loads(response_text)
+        grade = int(data["grade"])
+        feedback = {
+            "strengths": data["feedback"]["strengths"],
+            "improvements": data["feedback"]["improvements"]
+        }
+        return grade, feedback
+    except json.JSONDecodeError as e:
+        print(f"Failed to decode JSON: {str(e)}")
+        return None, {"strengths": "", "improvements": ""}
+    except KeyError as e:
+        print(f"Missing expected key in JSON response: {str(e)}")
+        return None, {"strengths": "", "improvements": ""}
+    except ValueError as e:
+        print(f"Error processing numerical values: {str(e)}")
+        return None, {"strengths": "", "improvements": ""}
