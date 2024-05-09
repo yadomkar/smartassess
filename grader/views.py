@@ -132,22 +132,13 @@ def grade_with_openai_model(chatgpt_answers, professor_solution, rubric):
     )
     return response.choices[0].message.content
 
-from django.utils.decorators import method_decorator
-from django.views.decorators.csrf import csrf_exempt
-
-@method_decorator(csrf_exempt, name='dispatch')
 class AutomatedGradingView(APIView):
     def get(self, request):
-        # Extract file paths from query parameters
         questions = extract_text_from_pdf('professor/Question.pdf')
         professor_solution = extract_text_from_pdf('professor/Solution.pdf')
         rubric = extract_text_from_pdf('professor/Rubric.pdf')
 
-        # Get answers from ChatGPT
         chatgpt_answers = get_answers_from_chatgpt(questions)
-
-        # Grade the answers using OpenAI model
         grading_results = grade_with_openai_model(chatgpt_answers, professor_solution, rubric)
 
-        # Return the results in JSON format
-        return JsonResponse({"result": grading_results})
+        return Response({"result": grading_results})
