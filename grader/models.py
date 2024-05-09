@@ -50,7 +50,7 @@ class Homework(models.Model):
 
     def grade_assignment(self):
         student_text = self.read_pdf(self.file.path)
-        rubric_text = self.read_pdf('professoFiles/Rubric.pdf')
+        rubric_text = self.read_pdf('professor/Rubric.pdf')
 
         prompt = f"""
         Assess the following student assignment based on the detailed rubric provided. The goal is to determine how well the student has met the criteria outlined in the rubric.
