@@ -76,7 +76,7 @@ class Homework(models.Model):
         response = client.chat.completions.create(
             model="gpt-3.5-turbo",
             messages=[
-                {"role": "system", "content": "You are a helpful assistant."},
+                {"role": "system", "content": "You are a helpful grader."},
                 {"role": "user", "content": prompt}
             ]
         )
