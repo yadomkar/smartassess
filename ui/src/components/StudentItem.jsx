@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 
-function StudentItem({ studentId }) {
-  const [status, setStatus] = useState('inProgress'); // Default status
+function StudentItem({ studentId, status, studentName }) {
   const [file, setFile] = useState(null);
   const [grades, setGrades] = useState(null);
   const [isGradesPopupOpen, setIsGradesPopupOpen] = useState(false);
@@ -27,7 +26,7 @@ function StudentItem({ studentId }) {
     formData.append('id', studentId);
 
     try {
-      const response = await fetch(`http://localhost:8080/submit?id=${studentId}`, {
+      const response = await fetch(`http://localhost:8000/homeworks/upload/?student_id=${studentId}`, {
         method: 'POST',
         body: formData,
       });
@@ -45,9 +44,7 @@ function StudentItem({ studentId }) {
 
   const viewGrades = async () => {
     try {
-      const response = await fetch(`http://localhost:8080/getGrade?id=${studentId}`, {
-        method: 'POST',
-      });
+      const response = await fetch(`http://localhost:8000/homeworks/detail/?id=${studentId}`);
 
       if (response.ok) {
         const data = await response.json();
@@ -64,10 +61,12 @@ function StudentItem({ studentId }) {
 
   const closePopup = () => setIsGradesPopupOpen(false);
 
+  const statusColor = status === 'graded' ? 'bg-green-500' : 'bg-red-500';
+
   return (
     <div className="flex items-center justify-between bg-white shadow-lg rounded-lg p-6 border border-gray-200 mb-4">
       <div className="flex items-center space-x-4">
-        <span className="text-2xl font-bold text-gray-800">{studentId}</span>
+        <span className="text-2xl font-bold text-gray-800">{studentName}</span>
       </div>
       <div className="flex items-center space-x-4">
         <input
@@ -88,7 +87,7 @@ function StudentItem({ studentId }) {
         >
           View Grades
         </button>
-        <div className={`h-6 w-6 rounded-full ${status === 'graded' ? 'bg-green-500' : 'bg-red-500'}`}></div>
+        <div className={`h-6 w-6 rounded-full ${statusColor}`}></div>
       </div>
 
       {/* Grades Popup */}
@@ -97,7 +96,7 @@ function StudentItem({ studentId }) {
           <div className="bg-white p-8 rounded-lg shadow-lg space-y-6">
             <h3 className="text-2xl font-bold">Grades for {studentId}</h3>
             <p><strong>Grade:</strong> {grades?.grade ?? 'N/A'}</p>
-            <p><strong>Comments:</strong> {grades?.comments ?? 'N/A'}</p>
+            {/* <p><strong>Comments:</strong> {grades?.comments ?? 'N/A'}</p> */}
             <p><strong>Feedback:</strong> {grades?.feedback ?? 'N/A'}</p>
             <button
               onClick={closePopup}

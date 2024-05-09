@@ -23,7 +23,7 @@ function RubricUpload() {
     formData.append('file', file);
 
     try {
-      const response = await fetch('http://localhost:8080/rubric', {
+      const response = await fetch('http://localhost:8000/professor/upload/', {
         method: 'POST',
         body: formData,
       });

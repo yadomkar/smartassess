@@ -1,26 +1,27 @@
-import React from 'react';
-import StudentList from './components/StudentList';
-import SolutionUpload from './components/SolutionUpload';
-import RubricUpload from './components/RubricUpload';
+import React from "react";
+import Navbar from "./components/Navbar";
+import StudentList from "./components/StudentList";
+import SolutionUpload from "./components/SolutionUpload";
+import RubricUpload from "./components/RubricUpload";
+import QuestionUpload from "./components/QuestionUpload";
 
 function App() {
   return (
-    <div className="flex p-6 space-x-4">
-      {/* Left side - Student list occupying 3/4th */}
-      <div className="w-3/4">
-        <StudentList />
-      </div>
-
-      {/* Right side - Teacher's solution and rubric upload occupying the remaining 1/4th */}
-      <div className="w-1/4 space-y-4 bg-gray-50 p-4 rounded-lg shadow-md">
-        {/* Solution Upload */}
-        <SolutionUpload />
-        
-        {/* Rubric Upload */}
-        <RubricUpload />
+    <div className="bg-gray-100 min-h-screen">
+      <Navbar />
+      <div className="container mx-auto p-8">
+        <div className="flex">
+          <div className="w-3/4 pr-8">
+            <StudentList />
+          </div>
+          <div className="w-1/4">
+            <QuestionUpload />
+            <SolutionUpload />
+            <RubricUpload />
+          </div>
+        </div>
       </div>
     </div>
   );
 }
-
 export default App;

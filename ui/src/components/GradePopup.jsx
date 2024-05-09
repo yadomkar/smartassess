@@ -6,7 +6,7 @@ function GradePopup({ gradeData, onClose }) {
       <div className="bg-white p-4 rounded">
         <h2 className="text-lg">Grades and Feedback</h2>
         <p>Grade: {gradeData.grade}</p>
-        <p>Comments: {gradeData.comments}</p>
+        <p>Feedback: {gradeData.feedback}</p>
         <button onClick={onClose} className="bg-red-500 text-white px-2 py-1 rounded">Close</button>
       </div>
     </div>

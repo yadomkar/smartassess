@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
 
-function SolutionUpload() {
+function QuestionUpload() {
   const [file, setFile] = useState(null);
 
   const handleFileChange = (event) => {
@@ -29,19 +29,19 @@ function SolutionUpload() {
       });
 
       if (response.ok) {
-        alert('Solution uploaded successfully!');
+        alert('Question uploaded successfully!');
       } else {
-        alert('Failed to upload the solution.');
+        alert('Failed to upload the Question.');
       }
     } catch (error) {
-      console.error('Error uploading solution:', error);
+      console.error('Error uploading Question:', error);
       alert('An error occurred during the upload.');
     }
   };
 
   return (
     <div className="bg-white shadow-lg rounded-lg p-8 border border-gray-200 mb-8">
-      <h2 className="text-2xl font-bold text-gray-800 mb-4">Upload Solution</h2>
+      <h2 className="text-2xl font-bold text-gray-800 mb-4">Upload Question</h2>
       <div className="flex flex-col space-y-4">
         <input
           type="file"
@@ -60,4 +60,4 @@ function SolutionUpload() {
   );
 }
 
-export default SolutionUpload;
+export default QuestionUpload;
