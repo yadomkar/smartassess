@@ -95,20 +95,10 @@ class Homework(models.Model):
 
 
 def parse_response(response_text):
-    try:
-        data = json.loads(response_text)
-        grade = int(data["grade"])
-        feedback = {
-            "strengths": data["feedback"]["strengths"],
-            "improvements": data["feedback"]["improvements"]
-        }
-        return grade, feedback
-    except json.JSONDecodeError as e:
-        print(f"Failed to decode JSON: {str(e)}")
-        return None, {"strengths": "", "improvements": ""}
-    except KeyError as e:
-        print(f"Missing expected key in JSON response: {str(e)}")
-        return None, {"strengths": "", "improvements": ""}
-    except ValueError as e:
-        print(f"Error processing numerical values: {str(e)}")
-        return None, {"strengths": "", "improvements": ""}
+    data = json.loads(response_text)
+    grade = int(data["grade"])
+    feedback = {
+        "strengths": data["feedback"]["strengths"],
+        "improvements": data["feedback"]["improvements"]
+    }
+    return grade, feedback
