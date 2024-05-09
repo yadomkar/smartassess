@@ -84,7 +84,7 @@ class Homework(models.Model):
         result_text = response.choices[0].message.content.strip()
 
         print(result_text)
-
+        print(self.student.first_name, self.student.last_name)
         grade, feedback = parse_response(result_text)
 
         self.ocr_text = student_text
