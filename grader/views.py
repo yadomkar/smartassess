@@ -16,23 +16,39 @@ class HomeworkUploadView(APIView):
         student_id = request.query_params.get('student_id')
         if not Student.objects.filter(id=student_id).exists():
             return Response({"error": "Student not found"}, status=status.HTTP_404_NOT_FOUND)
-
+        homework = Homework.objects.filter(student_id=student_id).order_by('-submission_date').first()
         # Add default values for 'description' and 'title' if they are not provided
-        request.data['submission_date'] = date.today().isoformat()  # Add today's date as submission date
-        request.data.setdefault('description', 'Default Homework Description')
-        request.data.setdefault('title', 'Default Homework Title')
-        request.data['student'] = student_id
+        # request.data['submission_date'] = date.today().isoformat()  # Add today's date as submission date
+        # request.data.setdefault('description', 'Default Homework Description')
+        # request.data.setdefault('title', 'Default Homework Title')
+        # request.data['student'] = student_id
+        #
+        # # Proceed with serializing the homework data
+        # serializer = HomeworkSerializer(data=request.data)
+        # if serializer.is_valid():
+        #     # Save the validated homework data
+        #     homework = serializer.save()
+        #     homework.grade_assignment()
+        #     return Response(serializer.data, status=status.HTTP_201_CREATED)
+        # else:
+        #     # Return errors if the data is not valid
+        #     return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+        for key, value in request.data.items():
+            if hasattr(homework, key):
+                setattr(homework, key, value)
 
-        # Proceed with serializing the homework data
-        serializer = HomeworkSerializer(data=request.data)
-        if serializer.is_valid():
-            # Save the validated homework data
-            homework = serializer.save()
-            homework.grade_assignment()
-            return Response(serializer.data, status=status.HTTP_201_CREATED)
-        else:
-            # Return errors if the data is not valid
-            return Response(serializer.errors, status=status.HTTP_400_BAD_REQUEST)
+            # Always update submission date to today's date
+        homework.submission_date = date.today()
+
+        # Save the updated homework
+        homework.save()
+
+        # Optionally, regrade the assignment
+        homework.grade_assignment()
+
+        # Serialize the homework for the response
+        serializer = HomeworkSerializer(homework)
+        return Response(serializer.data, status=status.HTTP_200_OK)
 
 class HomeworkListView(APIView):
     def get(self, request):
@@ -43,7 +59,8 @@ class HomeworkListView(APIView):
 
 class HomeworkStatusView(APIView):
     def get(self, request):
-        homeworks = Homework.objects.all()
+        # homeworks = Homework.objects.all()
+        homeworks = Homework.objects.order_by('student', '-submission_date').distinct('student')
         serializer = HomeworkStatusSerializer(homeworks, many=True)
         return Response(serializer.data)
 
